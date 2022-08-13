@@ -1,18 +1,14 @@
 # cancer13_microservices
 cancer13 microservices repository
-Kuznetsov Ivan's (kuznivan@gmail.com) repo
 
 # HW 12 docker-2
 Выполнено основное задание.
 
-docker-machine не входит в состав docker desctop более.
+docker-machine более не входит в состав docker desktop.
 Поставил docker-machine через brew (brew install docker-machin)
 
 \
-Контейнер собранный по Dockerfile с конфигурацией предложенной в ДЗ.
-
-При старте контейнер заваливается.
-
+Контейнер собранный по Dockerfile предложенного в ДЗ не стартует.
 ```
 ! Unable to load application: NameError: uninitialized constant Mongo::Client
 /reddit/app.rb:11:in `block in <top (required)>': uninitialized constant Mongo::Client (NameError)
@@ -41,3 +37,4 @@ docker-machine не входит в состав docker desctop более.
 RUN gem install bundler
 RUN gem install mongo
 ```
+Возможно надо использовать ubuntu 16 как это было в предыдущих ДЗ
