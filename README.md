@@ -4,6 +4,8 @@ cancer13 microservices repository
 # HW 12 docker-2
 Выполнено основное задание.
 
+В задании указано назвать папку `dockermonolith`, в тестах ищится папка `docker-monolith`
+
 docker-machine более не входит в состав docker desktop.
 Поставил docker-machine через brew (brew install docker-machin)
 
