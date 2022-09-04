@@ -7,7 +7,7 @@ yc compute instance create \
 	
 docker-machine create \
   --driver generic \
-  --generic-ip-address=51.250.79.219 \
+  --generic-ip-address=51.250.86.225 \
   --generic-ssh-user yc-user \
   --generic-ssh-key ~/.ssh/id_rsa_appuser \
   docker-host
