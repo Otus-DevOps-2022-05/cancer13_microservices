@@ -40,3 +40,23 @@ RUN gem install bundler
 RUN gem install mongo
 ```
 Возможно надо использовать ubuntu 16 как это было в предыдущих ДЗ
+________________
+# HW 13 docker-3
+- [x] Выполнено основное задание
+
+\
+`ЭТО НАДО ПОФИКСИТЬ`\
+По умолчанию контейнер с post_app.py не стартует, определены версии не всех зависимостей, что приводит к ошибке.\
+Путём гугляжа, проб и ошибок выявлено, что в `src/post-py/requirements.txt` модуль фласк должен быть версии `flask==0.12.5`  (по умолчанию указана версия 0.12.3)\
+\
+\
+команды используемые в ДЗ
+```
+docker build -t cancer13/post:1.0 ./post-py
+docker build -t cancer13/comment:1.0 ./comment
+docker build -t cancer13/ui:1.0 ./ui
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db -v reddit_db:/data/db mongo:latest
+docker run -d --network=reddit --network-alias=post cancer13/post:1.0
+docker run -d --network=reddit --network-alias=comment cancer13/comment:1.0
+docker run -d --network=reddit -p 9292:9292 cancer13/ui:2.0
+```

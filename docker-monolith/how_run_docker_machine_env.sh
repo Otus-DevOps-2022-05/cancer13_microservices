@@ -7,9 +7,12 @@ yc compute instance create \
 	
 docker-machine create \
   --driver generic \
-  --generic-ip-address=EXTERNAL_YC_VM_IP \
+  --generic-ip-address=51.250.79.219 \
   --generic-ssh-user yc-user \
   --generic-ssh-key ~/.ssh/id_rsa_appuser \
   docker-host
   
 eval $(docker-machine env docker-host)
+
+docker-machine rm docker-host
+yc compute instance delete docker-host
