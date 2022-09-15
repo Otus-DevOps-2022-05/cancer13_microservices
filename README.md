@@ -60,3 +60,8 @@ docker run -d --network=reddit --network-alias=post cancer13/post:1.0
 docker run -d --network=reddit --network-alias=comment cancer13/comment:1.0
 docker run -d --network=reddit -p 9292:9292 cancer13/ui:2.0
 ```
+________________
+# HW 14 docker-4
+- [x] Выполнено основное задание
+
+Имя проекта для compose задаётся через переменную COMPOSE_PROJECT_NAME в .env
