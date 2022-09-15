@@ -63,7 +63,17 @@ services:
       - '--collector.filesystem.mount-points-exclude="^/(sys|proc|dev|host|etc)($$|/)"'
     networks:
       - back_net
-
+  mongodb_exporter:
+    container_name: mongodb_exporter
+    hostname: mongodb_exporter
+    image: percona/mongodb_exporter:0.34.0
+    ports:
+      - 9216:9216
+      - 17001:17001
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+    networks:
+      - back_net
 volumes:
   post_db:
   prometheus_data:
