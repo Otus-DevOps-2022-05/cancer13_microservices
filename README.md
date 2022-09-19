@@ -65,3 +65,9 @@ ________________
 - [x] Выполнено основное задание
 
 Имя проекта для compose задаётся через переменную COMPOSE_PROJECT_NAME в .env
+___
+# HW 16 monitoring-1
+- [x] Выполнено основное задание
+- [x] * Добавьте в Prometheus мониторинг MongoDB
+
+Dockerhub https://hub.docker.com/u/cancer13
