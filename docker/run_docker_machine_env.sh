@@ -2,9 +2,8 @@
 yc compute instance create \
   --name logging \
   --hostname logging \
-  --memory=4 \
-  --cores=2 \
-  --core-fraction=50 \
+  --memory=8 \
+  --cores=4 \
   --zone ru-central1-a \
   --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
   --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=50 \
