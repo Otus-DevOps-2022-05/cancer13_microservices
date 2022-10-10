@@ -71,3 +71,12 @@ ___
 - [x] * Добавьте в Prometheus мониторинг MongoDB
 
 Dockerhub https://hub.docker.com/u/cancer13
+# HW17 logging-1
+- [x] Сделано основное задание
+Использован fluentd свежих версий (на версии 0.12 не хотел подключаться к elasticsearch)
+Использован elastic стек версии 7.16.3
+
+- [x] Сделано задание со *
+pattern ^service=%{NOTSPACE:service} \| event=%{NOTSPACE:event} (\| path=%{PATH:path} )?\| request_id=%{NOTSPACE:request_id}( \| remote_addr=%{IP:remote_addr} \| method=%{SPACE}%{WORD:method} \| response_status=%{INT:response_status})?( \| message='%{GREEDYDATA:message}')?$
+
+
