@@ -81,4 +81,4 @@ pattern ^service=%{NOTSPACE:service} \| event=%{NOTSPACE:event} (\| path=%{PATH:
 
 # HW18 kubernetes-1
 Не внятное описание домашней работы, видится что есть пробел между тем что надо сделать в домашке и тем что рассказывают на лекциях.
-
+Использовал kuber из docker desktop
