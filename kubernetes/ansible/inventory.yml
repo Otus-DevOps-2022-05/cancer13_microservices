@@ -1,0 +1,9 @@
+cluster:
+  children:
+    master:
+      hosts:
+        kube-node-0: {ansible_host: 51.250.4.134}
+        
+    nodes:
+      hosts:
+        kube-node-1: {ansible_host: 51.250.2.92}
