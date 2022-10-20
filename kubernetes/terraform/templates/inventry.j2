@@ -1,0 +1,12 @@
+cluster:
+  children:
+    master:
+      hosts:
+%{ for index,ip in nodes ~}
+        ${ ansible_index[index] == "0" ? join("", [ hostname_nodes[index], ": {ansible_host: ${ip}}\n" ]) : "\n" ~}
+%{ endfor ~}
+    nodes:
+      hosts:
+%{ for index,ip in nodes ~}
+${ ansible_index[index] != "0" ? join("", [ hostname_nodes[index], ": {ansible_host: ${ip}}\n" ]) : "        " ~}
+%{ endfor ~}

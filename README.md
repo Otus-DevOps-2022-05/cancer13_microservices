@@ -79,4 +79,5 @@ Dockerhub https://hub.docker.com/u/cancer13
 - [x] Сделано задание со *
 pattern ^service=%{NOTSPACE:service} \| event=%{NOTSPACE:event} (\| path=%{PATH:path} )?\| request_id=%{NOTSPACE:request_id}( \| remote_addr=%{IP:remote_addr} \| method=%{SPACE}%{WORD:method} \| response_status=%{INT:response_status})?( \| message='%{GREEDYDATA:message}')?$
 
-
+# HW18 kubernetes-1
+см описание к PR
