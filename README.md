@@ -81,3 +81,5 @@ pattern ^service=%{NOTSPACE:service} \| event=%{NOTSPACE:event} (\| path=%{PATH:
 
 # HW18 kubernetes-1
 см описание к PR
+
+# HW19 kubernetes-3
