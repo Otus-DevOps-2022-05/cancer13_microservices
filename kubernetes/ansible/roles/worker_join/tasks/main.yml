@@ -11,6 +11,19 @@
     path: "/etc/kubernetes/kubelet.conf"
   register: kubelet_conf
 
+- name: remove default config.toml
+  file:
+    path: /etc/containerd/config.toml
+    state: absent
+  when: not kubelet_conf.stat.exists
+  register: rm_config_toml
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+  when: rm_config_toml.changed
+
 - name: Join to k8s cluster
   shell: "{{ join_cluster }}"
   register: join_cluster_result

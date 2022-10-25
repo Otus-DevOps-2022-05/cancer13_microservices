@@ -1,0 +1,6 @@
+cloud_id        = "b--------i"
+folder_id       = "b------------p"
+zone            = "ru-central1-a"
+subnet_id       = "-----------6"
+public_key_path = "rsa.pub"
+count_inst      = "1"

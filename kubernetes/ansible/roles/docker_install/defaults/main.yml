@@ -7,13 +7,13 @@ required_packages:
   - software-properties-common
   - lsb-release
 
-docker_version: 5:19.03.15~3-0~ubuntu-bionic
+# docker_version: 5:19.03.15~3-0~ubuntu-bionic
 
 docker_repo_key: https://download.docker.com/linux/ubuntu/gpg
 docker_repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 docker_packages:
-  - docker-ce={{ docker_version }}
-  - docker-ce-cli={{ docker_version }}
+  - docker-ce
+  - docker-ce-cli
   - containerd.io
 docker_user: ubuntu
 docker_group: docker

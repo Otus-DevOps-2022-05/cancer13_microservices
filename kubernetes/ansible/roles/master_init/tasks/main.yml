@@ -4,6 +4,19 @@
     path: "/etc/kubernetes/pki/ca.key"
   register: kubeadm_ca
 
+- name: remove default config.toml
+  file:
+    path: /etc/containerd/config.toml
+    state: absent
+  when: not kubeadm_ca.stat.exists
+  register: rm_config_toml
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+  when: rm_config_toml.changed
+
 - name: Init cluster
   command: |
     kubeadm init --apiserver-cert-extra-sans="{{ k8s_apiserver_cert_extra_sans }}" \
