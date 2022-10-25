@@ -1,4 +1,3 @@
-# output "kube-master-ip" {
-#   value = yandex_compute_instance.kube-master[*].network_interface.0.nat_ip_address
-# }
-
+output "kube_id" {
+  value = yandex_kubernetes_cluster.cluster_hw20_ach.id
+}

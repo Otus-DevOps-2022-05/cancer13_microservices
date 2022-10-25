@@ -6,25 +6,56 @@ terraform {
   }
 }
 provider "yandex" {
+  service_account_key_file = var.service_account_key_file
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
   zone      = var.zone
 }
 
-data "yandex_iam_service_account" "msa" {
-  name = "msa"
+resource "yandex_iam_service_account" "kuba" {
+ name        = "kuba"
+ description = "sa для kuber'а"
+}
+
+resource "yandex_resourcemanager_folder_iam_binding" "editor" {
+  # Сервисному аккаунту назначается роль "editor".
+  folder_id = var.folder_id
+  role      = "editor"
+  members   = [
+    "serviceAccount:${yandex_iam_service_account.kuba.id}"
+  ]
+}
+
+resource "yandex_resourcemanager_folder_iam_binding" "images-puller" {
+  # Сервисному аккаунту назначается роль "container-registry.images.puller".
+  folder_id = var.folder_id
+  role      = "container-registry.images.puller"
+  members   = [
+    "serviceAccount:${yandex_iam_service_account.kuba.id}"
+  ]
+}
+
+resource "yandex_vpc_network" "kube-network" {
+  name = "kube-network"
+}
+
+resource "yandex_vpc_subnet" "kube-subnet" {
+  name           = "kube-subnet"
+  zone           = var.zone
+  network_id     = "${yandex_vpc_network.kube-network.id}"
+  v4_cidr_blocks = ["10.244.0.0/16"]
 }
 
 resource "yandex_kubernetes_cluster" "cluster_hw20_ach" {
   name        = "k8scluster"
   description = "create cluster with terraform"
-  network_id = var.network_id
+  network_id     = "${yandex_vpc_network.kube-network.id}"
 
   master {
     version = "1.20"
     zonal {
       zone      = var.zone
-      subnet_id = var.subnet_id
+      subnet_id       = yandex_vpc_subnet.kube-subnet.id
     }
 
     public_ip = true
@@ -39,8 +70,8 @@ resource "yandex_kubernetes_cluster" "cluster_hw20_ach" {
     }
   }
 
-  service_account_id      = "${data.yandex_iam_service_account.msa.id}"
-  node_service_account_id = "${data.yandex_iam_service_account.msa.id}"
+  service_account_id      = "${yandex_iam_service_account.kuba.id}"
+  node_service_account_id = "${yandex_iam_service_account.kuba.id}"
 
   labels = {
     tags = "cluster"
@@ -60,13 +91,13 @@ resource "yandex_kubernetes_node_group" "my_node_group" {
     platform_id = "standard-v2"
     network_interface {
       nat                = true
-      subnet_ids         = [var.subnet_id]
+      subnet_ids         = [yandex_vpc_subnet.kube-subnet.id]
     }
 
     resources {
-      memory = 8
+      memory = 4
       cores  = 4
-      core_fraction = 20
+      // core_fraction = 20
     }
 
     boot_disk {
@@ -74,7 +105,7 @@ resource "yandex_kubernetes_node_group" "my_node_group" {
       size = 64
     }
     metadata = {
-      ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
+  ssh-keys = "ubuntu:${file(var.public_key_path)}"
     }
 
     scheduling_policy {

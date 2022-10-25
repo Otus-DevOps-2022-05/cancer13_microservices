@@ -18,13 +18,10 @@ variable "public_key_path" {
   # Описание переменной
   description = "Path to the public key used for ssh access"
 }
-variable "subnet_id" {
-  description = "Subnet"
-}
-variable "network_id" {
-  description="network"
-}
 variable "count_inst" {
   description = "Количество интсансов"
   default     = 1
+}
+variable "service_account_key_file" {
+  description = "ключ сервис акка"
 }

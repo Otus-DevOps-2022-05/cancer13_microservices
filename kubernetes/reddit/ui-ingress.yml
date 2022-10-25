@@ -5,6 +5,7 @@ metadata:
   name: ui
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.allow-http: "false" # Отключаем проброс HTTP
 spec:
   rules:
   - http:
