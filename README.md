@@ -85,4 +85,6 @@ pattern ^service=%{NOTSPACE:service} \| event=%{NOTSPACE:event} (\| path=%{PATH:
 # HW19 kubernetes-3
 Выполнено основное задание
 
+k8s version 1.20 ya-cloud
+
 Добавил конфигурацию терраформ для поднятия кластера в ya-cloud
