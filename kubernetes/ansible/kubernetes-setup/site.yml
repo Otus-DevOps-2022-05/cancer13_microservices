@@ -1,3 +1,0 @@
----
-- import_playbook: master-playbook.yml
-- import_playbook: node-playbook.yml
