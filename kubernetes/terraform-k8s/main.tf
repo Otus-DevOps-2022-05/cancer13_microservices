@@ -1,17 +1,3 @@
-terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-    }
-  }
-}
-provider "yandex" {
-  service_account_key_file = var.service_account_key_file
-  cloud_id  = var.cloud_id
-  folder_id = var.folder_id
-  zone      = var.zone
-}
-
 resource "yandex_iam_service_account" "kuba" {
  name        = "kuba"
  description = "sa для kuber'а"
@@ -46,13 +32,13 @@ resource "yandex_vpc_subnet" "kube-subnet" {
   v4_cidr_blocks = ["10.244.0.0/16"]
 }
 
-resource "yandex_kubernetes_cluster" "cluster_hw20_ach" {
+resource "yandex_kubernetes_cluster" "otus-kube" {
   name        = "k8scluster"
   description = "create cluster with terraform"
   network_id     = "${yandex_vpc_network.kube-network.id}"
 
   master {
-    version = "1.20"
+    version = "1.22"
     zonal {
       zone      = var.zone
       subnet_id       = yandex_vpc_subnet.kube-subnet.id
@@ -77,15 +63,18 @@ resource "yandex_kubernetes_cluster" "cluster_hw20_ach" {
     tags = "cluster"
   }
 
-  release_channel = "RAPID"
+  release_channel = "STABLE"
   network_policy_provider = "CALICO"
 
+  provisioner "local-exec" {
+    command = "yc managed-kubernetes cluster get-credentials ${yandex_kubernetes_cluster.otus-kube.id} --external --force"
+  }
 }
 
-resource "yandex_kubernetes_node_group" "my_node_group" {
-  cluster_id  = "${yandex_kubernetes_cluster.cluster_hw20_ach.id}"
-  name        = "m-node-group"
-  version     = "1.20"
+resource "yandex_kubernetes_node_group" "otus-kube-node" {
+  cluster_id  = "${yandex_kubernetes_cluster.otus-kube.id}"
+  name        = "kube-node-group"
+  version     = "1.22"
 
   instance_template {
     platform_id = "standard-v2"
@@ -95,7 +84,7 @@ resource "yandex_kubernetes_node_group" "my_node_group" {
     }
 
     resources {
-      memory = 4
+      memory = 8
       cores  = 4
       // core_fraction = 20
     }
@@ -136,4 +125,7 @@ resource "yandex_kubernetes_node_group" "my_node_group" {
       duration   = "3h"
     }
   }
+  depends_on = [
+    yandex_kubernetes_cluster.otus-kube
+  ]
 }
