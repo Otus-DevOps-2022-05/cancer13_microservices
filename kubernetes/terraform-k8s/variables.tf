@@ -1,27 +1,57 @@
 variable "cloud_id" {
-  description = "Cloud"
+  description = "Yandex cloud ID"
 }
 variable "folder_id" {
-  description = "Folder"
+  description = "Yandex cloud folder"
 }
 variable "zone" {
-  description = "Zone"
-  # Значение по умолчанию
+  description = "Yandex cloud zone"
   default = "ru-central1-a"
 }
 variable "region_id" {
   description = "Region"
-  # Значение по умолчанию
   default = "ru-central1"
 }
 variable "public_key_path" {
-  # Описание переменной
   description = "Path to the public key used for ssh access"
 }
 variable "count_inst" {
-  description = "Количество интсансов"
+  description = "How many instances?"
   default     = 1
 }
 variable "service_account_key_file" {
-  description = "ключ сервис акка"
+  description = "SA key file path"
+}
+
+
+variable "helm_timeout" {
+  description = "Timeout value to wailt for helm chat deployment"
+  type        = number
+  default     = 600
+}
+
+## k8s Dashboard variables
+variable "helm_repo_k8s_dashboard" {
+  description = "A repository url of helm chart to deploy k8s dashboard"
+  type        = string
+  default     = "https://kubernetes.github.io/dashboard"
+}
+
+variable "helm_k8s_dashboard_version" {
+  description = "Helm chart version for k8s_dashboard"
+  type        = string
+  default     = "5.11.0"
+}
+
+###
+variable "ingress_controller" {
+  description = "URL for Ingress Controller helm chart"
+  type        = string
+  default     = "https://kubernetes.github.io/ingress-nginx"
+}
+###
+variable "namespace" {
+  description = "Namespace"
+  type        = string
+  default     = "dev"
 }
