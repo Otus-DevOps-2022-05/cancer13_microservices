@@ -100,3 +100,8 @@ k8s version 1.20 ya-cloud
 # HW21 kubernetes-4
 Используется Helm v3.10.1 (в методичке вторая версия)
 
+Не рабочая команда из ДЗ
+helm install --name test-ui-1 ui/
+
+Использовал
+helm install test-ui-1 ./ui -n dev

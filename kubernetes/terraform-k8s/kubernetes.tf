@@ -1,6 +1,6 @@
-resource "kubernetes_namespace" "app-stand" {
+resource "kubernetes_namespace" "stand-namespace" {
   metadata {
-    name = "${var.namespace}"
+    name = var.namespace
     labels = {
       "terraform" = "true"
     }

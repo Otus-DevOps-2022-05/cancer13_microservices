@@ -2,18 +2,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ui
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.allow-http: "false" # Отключаем проброс HTTP
 spec:
+  # ingressClassName: "nginx"
+  # defaultBackend:
+  #   service:
+  #     name: {{ .Release.Name }}-{{ .Chart.Name }}
+  #     port:
+  #       number: 9292
   rules:
-  - http:
+  - host: reddit.otus
+    http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: ui
+            name: {{ .Release.Name }}-{{ .Chart.Name }}
             port:
               number: 9292

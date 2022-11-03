@@ -10,6 +10,9 @@ resource "yandex_resourcemanager_folder_iam_binding" "editor" {
   members   = [
     "serviceAccount:${yandex_iam_service_account.kuba.id}"
   ]
+  depends_on = [
+    yandex_iam_service_account.kuba
+  ]
 }
 
 resource "yandex_resourcemanager_folder_iam_binding" "images-puller" {
@@ -18,6 +21,9 @@ resource "yandex_resourcemanager_folder_iam_binding" "images-puller" {
   role      = "container-registry.images.puller"
   members   = [
     "serviceAccount:${yandex_iam_service_account.kuba.id}"
+  ]
+  depends_on = [
+    yandex_iam_service_account.kuba
   ]
 }
 
@@ -69,6 +75,11 @@ resource "yandex_kubernetes_cluster" "otus-kube" {
   provisioner "local-exec" {
     command = "yc managed-kubernetes cluster get-credentials ${yandex_kubernetes_cluster.otus-kube.id} --external --force"
   }
+  depends_on = [
+    yandex_iam_service_account.kuba,
+    yandex_resourcemanager_folder_iam_binding.editor,
+    yandex_resourcemanager_folder_iam_binding.images-puller
+  ]
 }
 
 resource "yandex_kubernetes_node_group" "otus-kube-node" {
