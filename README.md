@@ -98,10 +98,15 @@ k8s version 1.20 ya-cloud
 - [x] Выполнено задание со звёздочкой
 
 # HW21 kubernetes-4
-Используется Helm v3.10.1 (в методичке вторая версия)
+Сразу использовал Helm v3.10.1 (в методичке вторая версия)
+На лекции подсветили что helm v2 устарел и лучше его не использовать
 
 Не рабочая команда из ДЗ
 helm install --name test-ui-1 ui/
+helm install reddit --name reddit-test
 
 Использовал
 helm install test-ui-1 ./ui -n dev
+helm install reddit-test reddit
+
+Не удалось найти chart с mongoDB версии 3.2 = создал свой chart

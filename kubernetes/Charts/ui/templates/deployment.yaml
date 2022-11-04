@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: {{ template "ui.fullname" . }}
   labels:
     app: reddit
     component: ui
@@ -25,12 +25,11 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      - image: {{ template "ui.container" . }}
         name: ui
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: ui
-          protocol: TCP
         resources:
           requests:
             memory: "64Mi"
@@ -39,6 +38,14 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         env:
+        - name: POST_SERVICE_HOST
+          value: {{  .Values.postHost | default (printf "%s-post" .Release.Name) }}
+        - name: POST_SERVICE_PORT
+          value: {{  .Values.postPort | default "5000" | quote }}
+        - name: COMMENT_SERVICE_HOST
+          value: {{  .Values.commentHost | default (printf "%s-comment" .Release.Name) }}
+        - name: COMMENT_SERVICE_PORT
+          value: {{  .Values.commentPort | default "9292" | quote }}
         - name: ENV
           valueFrom:
             fieldRef:
