@@ -37,16 +37,6 @@ resource "helm_release" "ingress-controller" {
   create_namespace = true
   reset_values     = false
 
-  // set {
-  //   name = "controller.service.httpsPort.enable"
-  //   value = "false"
-  // }
-
-  // set {
-  //   name = "controller.service.httpPort.targetPort"
-  //   value = "9292"
-  // }
-
   depends_on = [
     yandex_kubernetes_cluster.otus-kube,
     yandex_kubernetes_node_group.otus-kube-node

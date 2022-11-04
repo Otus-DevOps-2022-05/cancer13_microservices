@@ -41,12 +41,12 @@ variable "helm_repo_k8s_dashboard" {
 variable "ingress_controller_repo" {
   description = "URL for Ingress Controller helm chart"
   type        = string
-  default     = "https://helm.nginx.com/stable"
+  default     = "https://kubernetes.github.io/ingress-nginx"
 }
 variable "ingress_controller" {
   description = "URL for Ingress Controller helm chart"
   type        = string
-  default     = "nginx-ingress"
+  default     = "ingress-nginx"
 }
 ###
 variable "namespace" {
