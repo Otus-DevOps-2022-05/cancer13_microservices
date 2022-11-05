@@ -98,29 +98,28 @@ k8s version 1.20 ya-cloud
 - [x] Выполнено задание со звёздочкой
 
 # HW21 kubernetes-4
-Использовал:
-  Helm v3.10.1 (в методичке вторая версия)
-    На лекции подсветили что helm 2 устарел и лучше его не использовать
-  k8s 1.22
-  Сервис sslip.io указывал как host в ingress (пока без автоматизации)
-  Helm chart GitLab последней версии
-  Самописный chart с mongodb v3.2 (не нашёл чарт под версию 3)
+- [x] Выполнено основное задание - было не просто)
+- [x] Выполнил задание со * (в main после релиза трегирится пайп деплоя)
+      `"curl -X POST --fail -F token=$TOKEN -F ref=main https://gitlab.$gitlab_host/api/v4/projects/2/trigger/pipeline"`
 
 
+- Использовал:
+  - Helm v3.10.1 (в методичке вторая версия)
+    - На лекции подсветили что helm 2 устарел и лучше его не использовать
+  - k8s 1.22
+  - Сервис sslip.io указывал как host в ingress (пока без автоматизации)
+  - Helm chart GitLab последней версии
+  - Самописный chart с mongodb v3.2 (не нашёл чарт под версию 3)
 
 
-Заметки:
-  - Для работы с gitlab helm repo нужен VPN
+- Заметки:
+  - Для работы с helm репозиторий gitlab не доступен без VPN
   - GitLab стартует только с указанием `<EXT_IP-адресс_ingress-контроллера>.sslip.io` в `global.hosts.domain`
   - В GitLab при добавлении переменных по умолчанию включен Protect variable - что не позволяет использовать переменные на "не защищённых" ветка репозитория...
   - Докер жалуется на не безопасность использования параметра `--password`, останавливает работу, рекомендует использовать `--password-stdin`, переделал строку с авторизацией в докер:
-    echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
   - Вместо пароля от `dockerhub` использовал токен (хотя сильно разницы не вижу, разве что токинами можно управлять)
   - Люди решили что называть ветку `master` это расизм, и теперь везде надо использовать `main`
   - Обязательно надо создать роль (`clusterrolebinding`) для пользователя которого использует github при раскатке
-    kubectl create clusterrolebinding gitlab-admin --clusterrole=cluster-admin --serviceaccount=gitlab:default
+    - kubectl create clusterrolebinding gitlab-admin --clusterrole=cluster-admin --serviceaccount=gitlab:default
   - Так же желательно при раскатке gitlab дать уз раннера кастомное имя (хотя это уже вопросы безопасности)
-
-
-
-Не до конца разобрался с ингрессами, чувствую проблел в этом вопросе (хотя всё и работает)
