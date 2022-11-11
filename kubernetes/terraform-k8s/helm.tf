@@ -4,19 +4,8 @@ resource "helm_release" "k8s_dashboard" {
   namespace        = "dashboard"
   repository       = var.helm_repo_k8s_dashboard
   timeout          = var.helm_timeout
-  version          = var.helm_k8s_dashboard_version
   create_namespace = true
   reset_values     = false
-
-  set {
-    name  = "labels.terraform"
-    value = "true"
-  }
-
-  // set {
-  //   name  = "serviceAccount"
-  //   value = "true"
-  // }
 
   set {
     name  = "settings.itemsPerPage"
@@ -40,19 +29,13 @@ resource "helm_release" "k8s_dashboard" {
 }
 
 resource "helm_release" "ingress-controller" {
-  name             = "ingress-nginx"
-  chart            = "ingress-nginx"
-  namespace        = "ingress-nginx"
-  repository       = var.ingress_controller
+  name             = var.ingress_controller
+  namespace        = var.ingress_controller
+  chart            = var.ingress_controller
+  repository       = var.ingress_controller_repo
   timeout          = var.helm_timeout
-  version          = "4.3.0"
   create_namespace = true
   reset_values     = false
-
-  set {
-    name  = "controller.ingressClassResource.name"
-    value = "insecure"
-  }
 
   depends_on = [
     yandex_kubernetes_cluster.otus-kube,

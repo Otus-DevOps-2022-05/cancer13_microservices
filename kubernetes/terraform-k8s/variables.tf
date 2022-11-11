@@ -37,17 +37,16 @@ variable "helm_repo_k8s_dashboard" {
   default     = "https://kubernetes.github.io/dashboard"
 }
 
-variable "helm_k8s_dashboard_version" {
-  description = "Helm chart version for k8s_dashboard"
-  type        = string
-  default     = "5.11.0"
-}
-
 ###
-variable "ingress_controller" {
+variable "ingress_controller_repo" {
   description = "URL for Ingress Controller helm chart"
   type        = string
   default     = "https://kubernetes.github.io/ingress-nginx"
+}
+variable "ingress_controller" {
+  description = "URL for Ingress Controller helm chart"
+  type        = string
+  default     = "ingress-nginx"
 }
 ###
 variable "namespace" {

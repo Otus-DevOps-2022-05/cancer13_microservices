@@ -1,0 +1,143 @@
+---
+image: alpine:latest
+
+variables:
+  gitlab_host: "51.250.85.10.sslip.io"
+
+stages:
+  - test
+  - staging
+  - production
+
+test:
+  stage: test
+  script:
+    - exit 0
+  only:
+    - triggers
+    - branches
+
+staging:
+  stage: staging
+  variables:
+    env: staging
+    KUBE_NAMESPACE: staging
+    CI_REGISTRY: 'docker.io'
+    CI_APPLICATION_REPOSITORY: $CI_REGISTRY/$CI_PROJECT_PATH
+    CI_APPLICATION_TAG: $CI_COMMIT_REF_SLUG
+    CI_CONTAINER_NAME: ci_job_build_${CI_JOB_ID}
+  environment:
+    name: staging
+    url: http://staging.$gitlab_host
+  only:
+    refs:
+      - main
+  before_script:
+    # installing dependencies
+    - apk add -U openssl curl tar gzip bash ca-certificates git
+    - wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+    - wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk
+    - apk add glibc-2.23-r3.apk
+    - rm glibc-2.23-r3.apk
+    # - curl https://storage.googleapis.com/pub/gsutil.tar.gz | tar -xz -C $HOME
+    # - export PATH=${PATH}:$HOME/gsutil
+    - curl https://mirrors.huaweicloud.com/helm/v3.9.4/helm-v3.9.4-linux-amd64.tar.gz | tar zx
+    - mv linux-amd64/helm /usr/bin/
+    - helm version
+    # - curl  -o /usr/bin/sync-repo.sh https://raw.githubusercontent.com/kubernetes/helm/main/scripts/sync-repo.sh
+    # - chmod a+x /usr/bin/sync-repo.sh
+    - curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/bin/kubectl
+    - kubectl version -o yaml
+    # ensuring namespace
+    - kubectl auth can-i create namespaces
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+  script:
+    # deploy
+    - echo $KUBE_NAMESPACE
+    - export track="${1-stable}"
+    - >
+      if [[ "$track" != "stable" ]]; then
+        name="$name-$track"
+      fi
+    # - echo "Clone deploy repository..."
+    # - git clone http://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/reddit-deploy.git
+    - echo "Download helm dependencies..."
+    - helm dep build reddit
+    # - helm dep update reddit-deploy/reddit
+    - echo "Deploy helm release $name to $KUBE_NAMESPACE"
+    - echo "Upgrading existing release..."
+    - export ui_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/ui/raw/main/VERSION)
+    - export post_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/post/raw/main/VERSION)
+    - export comment_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/comment/raw/main/VERSION)
+    - echo "helm upgrade --install --wait --set ui.ingress.host="$env.$gitlab_host" --set ui.image.tag="$ui_version" --set post.image.tag="$post_version" --set comment.image.tag="$comment_version" --namespace="$KUBE_NAMESPACE" --version="$CI_PIPELINE_ID-$CI_JOB_ID" "$name" reddit"
+    - >
+      helm upgrade --install \
+        --wait \
+        --set ui.ingress.host="$env.$gitlab_host" \
+        --set ui.image.tag="$ui_version" \
+        --set post.image.tag="$post_version" \
+        --set comment.image.tag="$comment_version" \
+        --namespace="$KUBE_NAMESPACE" \
+        --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+        "$env" reddit
+
+production:
+  stage: production
+  variables:
+    env: production
+    KUBE_NAMESPACE: production
+    CI_REGISTRY: 'docker.io'
+    CI_APPLICATION_REPOSITORY: $CI_REGISTRY/$CI_PROJECT_PATH
+    CI_APPLICATION_TAG: $CI_COMMIT_REF_SLUG
+    CI_CONTAINER_NAME: ci_job_build_${CI_JOB_ID}
+  environment:
+    name: production
+    url: http://production.$gitlab_host
+  when: manual
+  only:
+    refs:
+      - main
+  before_script:
+    # installing dependencies
+    - apk add -U openssl curl tar gzip bash ca-certificates git
+    - wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+    - wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk
+    - apk add glibc-2.23-r3.apk
+    - rm glibc-2.23-r3.apk
+    # - curl https://storage.googleapis.com/pub/gsutil.tar.gz | tar -xz -C $HOME
+    # - export PATH=${PATH}:$HOME/gsutil
+    - curl https://mirrors.huaweicloud.com/helm/v3.9.4/helm-v3.9.4-linux-amd64.tar.gz | tar zx
+    - mv linux-amd64/helm /usr/bin/
+    - helm version
+    # - curl  -o /usr/bin/sync-repo.sh https://raw.githubusercontent.com/kubernetes/helm/main/scripts/sync-repo.sh
+    # - chmod a+x /usr/bin/sync-repo.sh
+    - curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/bin/kubectl
+    - kubectl version -o yaml
+    # ensuring namespace
+    - kubectl auth can-i create namespaces
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+  script:
+    # deploy
+    # - echo "Clone deploy repository..."
+    # - git clone http://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/reddit-deploy.git
+    - echo "Download helm dependencies..."
+    - helm dep build reddit
+    # - helm dep update reddit-deploy/reddit
+    - echo "Deploy helm release $name to $KUBE_NAMESPACE"
+    - echo "Upgrading existing release..."
+    - export ui_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/ui/raw/main/VERSION)
+    - export post_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/post/raw/main/VERSION)
+    - export comment_version=$(curl https://gitlab.$gitlab_host/$CI_PROJECT_NAMESPACE/comment/raw/main/VERSION)
+    - echo "helm upgrade --install --wait --set ui.ingress.host="$env.$gitlab_host" --set ui.image.tag="$ui_version" --set post.image.tag="$post_version" --set comment.image.tag="$comment_version" --namespace="$KUBE_NAMESPACE" --version="$CI_PIPELINE_ID-$CI_JOB_ID" "$name" reddit"
+    - >
+      helm upgrade --install \
+        --wait \
+        --set ui.ingress.host="$env.$gitlab_host" \
+        --set ui.image.tag="$ui_version" \
+        --set post.image.tag="$post_version" \
+        --set comment.image.tag="$comment_version" \
+        --namespace="$KUBE_NAMESPACE" \
+        --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+        "$env" reddit
