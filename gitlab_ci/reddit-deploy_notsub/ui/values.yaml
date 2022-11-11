@@ -1,0 +1,18 @@
+---
+service:
+  internalPort: 9292
+  externalPort: 9292
+
+image:
+  repository: cancer13/ui
+  tag: latest
+
+ingress:
+  class: nginx
+  path: /
+  host: dev
+
+postHost:
+postPort:
+commentHost:
+commentPort:
